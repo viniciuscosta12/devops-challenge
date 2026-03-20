@@ -13,30 +13,30 @@ jobs:
   commit-lint:
     runs-on: ubuntu-latest
     steps:
-      - name: 📥 Checkout do código
+      - name: Checkout do código
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
           
-      - name: 📝 Validar Conventional Commits
+      - name: Validar Conventional Commits
         uses: wagoid/commitlint-github-action@v5
 
   build-and-validate:
     needs: commit-lint
     runs-on: ubuntu-latest
     steps:
-      - name: 📥 Checkout do código
+      - name: Checkout do código
         uses: actions/checkout@v4
 
-      - name: 🔍 Lint do Dockerfile (Hadolint)
+      - name: Lint do Dockerfile (Hadolint)
         uses: hadolint/hadolint-action@v3.1.0
         with:
           dockerfile: app/Dockerfile
 
-      - name: 🐳 Build da Imagem Docker (Tag temporária com SHA)
+      - name: Build da Imagem Docker (Tag temporária com SHA)
         run: docker build -t devops-challenge-app:${{ github.sha }} ./app
 
-      - name: 🛡️ Scan de Segurança (Trivy)
+      - name: Scan de Segurança (Trivy)
         uses: aquasecurity/trivy-action@master
         with:
           image-ref: 'devops-challenge-app:${{ github.sha }}'
@@ -56,12 +56,12 @@ jobs:
       pull-requests: write
       
     steps:
-      - name: 📥 Checkout do código
+      - name: Checkout do código
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
-      - name: 🚀 Semantic Release
+      - name: Semantic Release
         id: semantic
         uses: cycjimmy/semantic-release-action@v4
         env:
