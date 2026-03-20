@@ -50,6 +50,13 @@ jobs:
     needs: build-and-validate
     if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
+    
+    # Damos permissão explícita de escrita para o robô:
+    permissions:
+      contents: write
+      issues: write
+      pull-requests: write
+      
     steps:
       - name: 📥 Checkout do código
         uses: actions/checkout@v4
@@ -61,12 +68,3 @@ jobs:
         uses: cycjimmy/semantic-release-action@v4
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          
-      # Exemplo de como você usaria a tag gerada para versionar a imagem final:
-      - name: 🏷️ Versionar Imagem Docker (Simulação)
-        if: steps.semantic.outputs.new_release_published == 'true'
-        run: |
-          echo "Nova versão gerada: ${{ steps.semantic.outputs.new_release_version }}"
-          # Aqui entrariam os comandos para taguear e enviar para o Registry:
-          # docker tag devops-challenge-app:${{ github.sha }} meu-registry/devops-challenge-app:v${{ steps.semantic.outputs.new_release_version }}
-          # docker push meu-registry/devops-challenge-app:v${{ steps.semantic.outputs.new_release_version }}
