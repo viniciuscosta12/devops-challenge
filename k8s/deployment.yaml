@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: devops-challenge-app
-        image: devops-challenge-app:latest # No pipeline de CI/CD, a tag 'latest' seria substituída pela tag do build (ex: SHA do commit)
+        image: devops-challenge-app:latest
         imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 8080
@@ -26,9 +26,9 @@ spec:
             configMapKeyRef:
               name: app-config
               key: APP_ENV
-        # Se houvesse um segredo (ex: DB_PASSWORD), injetaríamos via SecretKeyRef aqui, e não em texto plano.
+        # Se houvesse um secret (ex: DB_PASSWORD), injetaríamos via SecretKeyRef aqui, e não em texto plano.
         
-        # Requests e Limits (Garante que a app não consuma o node inteiro e saiba o mínimo que precisa para rodar)
+        # Requests e Limits
         resources:
           requests:
             cpu: "100m"
