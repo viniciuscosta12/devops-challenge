@@ -140,5 +140,7 @@ curl http://localhost:8080/health
 
 * **Autoscaling:** Implementação de um Horizontal Pod Autoscaler (HPA) baseado em métricas de CPU e Memória para escalar a aplicação conforme a demanda.
 
-* **Helm / Kustomize:** Empacotamento desses manifestos para facilitar a parametrização, versionamento e o deploy contínuo utilizando ferramentas de GitOps, como o ArgoCD.
+* **Helm / Kustomize:** Empacotamento desses manifestos para facilitar a parametrização, versionamento e o deploy contínuo utilizando ferramentas de GitOps, como o ArgoCD.]
+
+
 
