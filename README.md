@@ -145,7 +145,7 @@ curl http://localhost:8080/health
 
 * **Autoscaling:** Implementação de um Horizontal Pod Autoscaler (HPA) baseado em métricas de CPU e Memória para escalar a aplicação conforme a demanda.
 
-* **Helm / Kustomize:** Empacotamento desses manifestos para facilitar a parametrização, versionamento e o deploy contínuo utilizando ferramentas de GitOps, como o ArgoCD.]
+* **Helm / Kustomize:** Empacotamento desses manifestos para facilitar a parametrização, versionamento e o deploy contínuo utilizando ferramentas de GitOps, como o ArgoCD.
 
 
 ## Parte 4 – Pipeline CI/CD (GitHub Actions)
@@ -193,7 +193,7 @@ Embora o provisionamento real não seja um requisito deste desafio, o código es
 
 1. **Acesse o diretório do Terraform:**
 ```bash
-   cd terraform/
+   cd iac/
 ```
 
 2. **Inicialize o diretório:**
@@ -242,3 +242,8 @@ terraform destroy
 * **Remote State:** Configurar um bloco `backend "s3"` (com `DynamoDB` para *State Locking*) para armazenar o ficheiro `.tfstate` de forma segura e centralizada, permitindo o trabalho em equipe.
 
 * **Integração CI/CD:** Adicionar um fluxo no GitHub Actions (`terraform plan` e `terraform apply`) focado na pasta `iac/`, utilizando ferramentas como o `TFSec` para varrer o código em busca de falhas de segurança antes do provisionamento.
+
+
+## Parte 6 – Segurança
+
+Um dos focos desse projeto é a parte de segurança (*DevSecOps*). Consulte o arquivo [SECURITY.md](docs/SECURITY.md) para visualizar as diretrizes completas de gerenciamento de segredos, proteção de imagens e acessos na Cloud adotadas para esta arquitetura.
