@@ -6,20 +6,21 @@ on:
   pull_request:
     branches: [ "main" ]
 
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
 jobs:
-  # JOB 1: Garante que as mensagens de commit sigam o padrão
   commit-lint:
     runs-on: ubuntu-latest
     steps:
       - name: 📥 Checkout do código
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0 # Necessário para ler o histórico de commits
+          fetch-depth: 0
           
       - name: 📝 Validar Conventional Commits
         uses: wagoid/commitlint-github-action@v5
 
-  # JOB 2: Build e Validação (Só roda se o commit-lint passar)
   build-and-validate:
     needs: commit-lint
     runs-on: ubuntu-latest
@@ -45,13 +46,10 @@ jobs:
           vuln-type: 'os,library'
           severity: 'CRITICAL,HIGH'
 
-  # JOB 3: Gera a Tag Semântica e a Release (Só roda na main)
   release:
     needs: build-and-validate
     if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
-    
-    # Damos permissão explícita de escrita para o robô:
     permissions:
       contents: write
       issues: write
