@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: app-config
+  labels:
+    app: devops-challenge
+data:
+  APP_ENV: "dev-k8s"

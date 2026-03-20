@@ -1,0 +1,72 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  # JOB 1: Garante que as mensagens de commit sigam o padrão
+  commit-lint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 📥 Checkout do código
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # Necessário para ler o histórico de commits
+          
+      - name: 📝 Validar Conventional Commits
+        uses: wagoid/commitlint-github-action@v5
+
+  # JOB 2: Build e Validação (Só roda se o commit-lint passar)
+  build-and-validate:
+    needs: commit-lint
+    runs-on: ubuntu-latest
+    steps:
+      - name: 📥 Checkout do código
+        uses: actions/checkout@v4
+
+      - name: 🔍 Lint do Dockerfile (Hadolint)
+        uses: hadolint/hadolint-action@v3.1.0
+        with:
+          dockerfile: app/Dockerfile
+
+      - name: 🐳 Build da Imagem Docker (Tag temporária com SHA)
+        run: docker build -t devops-challenge-app:${{ github.sha }} ./app
+
+      - name: 🛡️ Scan de Segurança (Trivy)
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: 'devops-challenge-app:${{ github.sha }}'
+          format: 'table'
+          exit-code: '1'
+          ignore-unfixed: true
+          vuln-type: 'os,library'
+          severity: 'CRITICAL,HIGH'
+
+  # JOB 3: Gera a Tag Semântica e a Release (Só roda na main)
+  release:
+    needs: build-and-validate
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+      - name: 📥 Checkout do código
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: 🚀 Semantic Release
+        id: semantic
+        uses: cycjimmy/semantic-release-action@v4
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          
+      # Exemplo de como você usaria a tag gerada para versionar a imagem final:
+      - name: 🏷️ Versionar Imagem Docker (Simulação)
+        if: steps.semantic.outputs.new_release_published == 'true'
+        run: |
+          echo "Nova versão gerada: ${{ steps.semantic.outputs.new_release_version }}"
+          # Aqui entrariam os comandos para taguear e enviar para o Registry:
+          # docker tag devops-challenge-app:${{ github.sha }} meu-registry/devops-challenge-app:v${{ steps.semantic.outputs.new_release_version }}
+          # docker push meu-registry/devops-challenge-app:v${{ steps.semantic.outputs.new_release_version }}
